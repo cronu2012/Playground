@@ -41,16 +41,11 @@ public class Main {
         if(value instanceof String){
             queryString.append(value);
         }else {
-            Map<String,String> valueMap = (Map) value;
+            Map<String,String> valueMap = (TreeMap) value;
             queryString.append("{");
-            boolean single = true;
-            for (Map.Entry<String, String> entry1 : valueMap.entrySet()) {
-                if(!single)  queryString.append(",");
-                queryString.append("\""+entry1.getKey()+"\"");
-                queryString.append(":");
-                queryString.append("\""+entry1.getValue()+"\"");
-                single = false;
-            }
+            queryString.append(valueMap.entrySet().stream()
+                    .map(entry -> "\"" + entry.getKey() + "\":\"" + entry.getValue() + "\"")
+                    .collect(Collectors.joining(",")));
             queryString.append("}");
         }
         return queryString.toString();
